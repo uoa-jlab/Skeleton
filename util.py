@@ -167,8 +167,8 @@ def train_model(model, train_loader, val_loader, criterion, optimizer, scheduler
 
             pressure = add_gaussian_noise(pressure, noise_factor=0.1)
             decoder_input = add_gaussian_noise(decoder_input, noise_factor=0.1)
-            # if torch.rand(1).item() < 0.95:
-            #    decoder_input=torch.zeros_like(decoder_input)
+            if torch.rand(1).item() < 0.95:
+                decoder_input=torch.zeros_like(decoder_input)
             outputs = model(pressure, decoder_input)
             loss = criterion(outputs, skeleton)
 
