@@ -40,6 +40,7 @@ pip install -r requirements.txt
 
 ## Project Structure
 
+···
 project-name/
 ├── data/ # Dataset files
 ├── docs/ # Documentation files
@@ -53,3 +54,4 @@ project-name/
 ├── requirements.txt # Python dependencies
 ├── README.md # Project overview and instructions
 └── setup.py # Installation script
+···
