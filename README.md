@@ -6,8 +6,8 @@ Collect plantar pressure data using smart insoles and then perform prediction us
 
 ## Table of Contents
 
-- Introduction(#Introduction)
-- [安装](#安装)
+- [Introduction](#Introduction)
+- [Install](#Intall)
 - [使用方法](#使用方法)
 - [项目结构](#项目结构)
 - [数据说明](#数据说明)
@@ -22,11 +22,13 @@ Collect plantar pressure data using smart insoles and then perform prediction us
 
 ## Introduction
 
-简要介绍项目背景、目标和主要方法。
+The primary function of this program is to reconstruct the skeletal data captured by OptiTrack using pressure data from both feet. Since the initial version was developed using Jupyter Notebook, you can directly download the Code.ipynb file and run it after installing the libraries listed in requirements.txt. If you prefer to use other IDEs such as PyCharm or VS Code, you will need to download the additional .py files. Please note that these files have not been thoroughly tested, so there might be some minor issues.
+
+Since this project is highly task-specific, it cannot be directly applied to other programs. However, the overall structure is quite simple, and once the underlying idea is understood, it can be adapted to other applications through modifications.
 
 ---
 
-## 安装
+## Install
 
 ```bash
 git clone https://github.com/yourname/yourproject.git
