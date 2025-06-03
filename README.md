@@ -30,7 +30,6 @@ Since this project is highly task-specific, it cannot be directly applied to oth
 
 ## Install
 
+All the required libraries are listed in the requirements.txt file.
 ```bash
-git clone https://github.com/yourname/yourproject.git
-cd yourproject
 pip install -r requirements.txt
