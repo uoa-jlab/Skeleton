@@ -1,57 +1,10 @@
-class EnhancedSkeletonLoss(nn.Module):
-    def __init__(self, alpha=1.0, beta=0.1, gamma=0.1, window_size=5):
-        super().__init__()
-        self.alpha = alpha
-        self.beta = beta
-        self.gamma = gamma
-        self.window_size = window_size
-
-    def forward(self, pred, target):
-        # MSE損失
-        mse_loss = F.mse_loss(pred, target)
-        # 変化量の損失
-        motion_loss = F.mse_loss(
-            pred[1:] - pred[:-1],
-            target[1:] - target[:-1]
-        )
-
-        # 加速度の損失
-        accel_loss = F.mse_loss(
-            pred[2:] + pred[:-2] - 2 * pred[1:-1],
-            target[2:] + target[:-2] - 2 * target[1:-1]
-        )
-        # 骨骼长度的损失
-        total_loss = 0.0
-        batch_size = int(pred.shape[0])
-        num_joints = int(pred.shape[2] / 3)
-
-        predicted = pred.view(batch_size, self.window_size, num_joints, 3)
-        target = target.view(batch_size, self.window_size, num_joints, 3)
-        joint_hierarchy = [
-            (0, 1), (1, 2), (2, 3), (3, 4),  # 背骨
-            (5, 6), (6, 7), (7, 8),  # 腕和肩（示例）
-            (9, 10), (10, 11), (11, 12), (5, 9),  # 另一侧的腕和肩（示例）
-            (13, 14), (14, 15), (15, 16),  # 腿的一侧（示例）
-            (17, 18), (18, 19), (19, 20), (13, 17)  # 另一侧的腿（示例）
-        ]
-        for parent, child in joint_hierarchy:
-            # 计算预测中对应骨骼的长度
-            pred_bone = predicted[:, :, parent, :] - predicted[:, :, child, :]
-            pred_length = torch.norm(pred_bone, dim=1)
-            # 计算教师数据中对应骨骼的长度
-            target_bone = target[:, :, parent, :] - target[:, :, child, :]
-            target_length = torch.norm(target_bone, dim=1)
-            # 均方误差
-            total_loss += torch.mean((pred_length - target_length) ** 2)
-        total_loss = total_loss / len(joint_hierarchy)
-
-        return self.alpha * mse_loss / batch_size
-
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
 class EnhancedSkeletonLoss_WithAngleConstrains(nn.Module):
-    def __init__(self, alpha=1.0, beta=0.1, gamma=0.5, window_size=5):
+    def __init__(self, alpha=1.0, gamma=0.5, window_size=5):
         super().__init__()
         self.alpha = alpha
-        self.beta = beta
         self.gamma = gamma
         self.window_size = window_size
 
@@ -83,18 +36,6 @@ class EnhancedSkeletonLoss_WithAngleConstrains(nn.Module):
         weighted_squared_diff = squared_diff * joint_weights.view(1, 1, num_joints)
         # 平均得到加权的均方误差
         mse_loss = weighted_squared_diff.mean()
-
-        # 変化量の損失
-        motion_loss = F.mse_loss(
-            pred[1:] - pred[:-1],
-            target[1:] - target[:-1]
-        )
-
-        # 加速度の損失
-        accel_loss = F.mse_loss(
-            pred[2:] + pred[:-2] - 2 * pred[1:-1],
-            target[2:] + target[:-2] - 2 * target[1:-1]
-        )
 
         eps = 1e-6
         angle_loss = 0.0
@@ -132,28 +73,21 @@ class EnhancedSkeletonLoss_WithAngleConstrains(nn.Module):
             angle_loss += F.mse_loss(cos_pred, cos_target)
         angle_loss = angle_loss / len(angle_pairs)
 
-        # 骨骼长度的损失
-        total_loss = 0.0
+        return self.alpha * mse_loss + self.gamma * angle_loss
 
-        predicted = pred.view(batch_size, self.window_size, num_joints, 3)
-        target = target.view(batch_size, self.window_size, num_joints, 3)
-        joint_hierarchy = [
-            (0, 1), (1, 2), (2, 3), (3, 4),  # 背骨
-            (5, 6), (6, 7), (7, 8),  # 腕和肩（示例）
-            (9, 10), (10, 11), (11, 12), (5, 9),  # 另一侧的腕和肩（示例）
-            (13, 14), (14, 15), (15, 16),  # 腿的一侧（示例）
-            (17, 18), (18, 19), (19, 20), (13, 17)  # 另一侧的腿（示例）
-        ]
-        for parent, child in joint_hierarchy:
-            # 计算预测中对应骨骼的长度
-            pred_bone = predicted[:, :, parent, :] - predicted[:, :, child, :]
-            pred_length = torch.norm(pred_bone, dim=1)
-            # 计算教师数据中对应骨骼的长度
-            target_bone = target[:, :, parent, :] - target[:, :, child, :]
-            target_length = torch.norm(target_bone, dim=1)
-            # 均方误差
-            total_loss += torch.mean((pred_length - target_length) ** 2)
-        total_loss = total_loss / len(joint_hierarchy)
 
-        # print(mse_loss,(motion_loss + accel_loss),angle_loss)
-        return self.alpha * mse_loss + 0 * self.beta * (motion_loss + accel_loss) + self.gamma * angle_loss
+class EnhancedSkeletonLoss(nn.Module):
+    def __init__(self, alpha=1.0):
+        super().__init__()
+        self.alpha = alpha
+
+    def forward(self, pred, target):
+        # MSE損失
+        mse_loss = F.mse_loss(pred, target)
+        batch_size = int(pred.shape[0])
+        # 変化量の損失
+        motion_loss = F.mse_loss(
+            pred[1:] - pred[:-1],
+            target[1:] - target[:-1]
+        )
+        return self.alpha * mse_loss / batch_size

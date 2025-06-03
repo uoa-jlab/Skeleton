@@ -1,13 +1,14 @@
-import pandas as pd
 import numpy as np
-import math
 from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import MinMaxScaler,StandardScaler
 import torch
-import torch.nn as nn
-from torch.utils.data import Dataset, DataLoader
-import torch.nn.functional as F
-from tqdm import tqdm
+from torch.utils.data import DataLoader
+
+from data_load import preprocess_pressure_data, PressureSkeletonDataset
+from loss import EnhancedSkeletonLoss_WithAngleConstrains
+from model import EnhancedSkeletonTransformer
+from util import train_model
+
+
 def main():
     # データの読み込み
     data_pairs = [
@@ -36,7 +37,7 @@ def main():
          './data/20241115test3/insoleSensor/20241115_154900_right.csv'),
         # 総合(test3)
         # ('./data/20241115test3/Opti-track/Take 2024-11-15 03.50.00 PM.csv',
-        # './data/20241115test3/insoleSensor/20241115_155500_left.csv', 
+        # './data/20241115test3/insoleSensor/20241115_155500_left.csv',
         # './data/20241115test3/insoleSensor/20241115_155500_right.csv'),
 
         # 釘宮くん
@@ -84,8 +85,6 @@ def main():
     )
     print(train_decoder_input.shape)
     print(val_decoder_input.shape)
-
-    print(train_decoder_input[0])
     # デバイスの設定
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     print(f"Using device: {device}")
@@ -137,7 +136,7 @@ def main():
 
     # 損失関数、オプティマイザ、スケジューラの設定
     # criterion = torch.nn.MSELoss()  # 必要に応じてカスタム損失関数に変更可能
-    criterion = EnhancedSkeletonLoss_WithAngleConstrains(alpha=1.0, beta=0.1, gamma=0.5, window_size=window_size)
+    criterion = EnhancedSkeletonLoss_WithAngleConstrains(alpha=1.0, gamma=0.5, window_size=window_size)
     optimizer = torch.optim.AdamW(
         model.parameters(),
         lr=0.0001,

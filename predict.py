@@ -1,3 +1,13 @@
+import pandas as pd
+import numpy as np
+from sklearn.preprocessing import MinMaxScaler,StandardScaler
+import torch
+
+from loss import EnhancedSkeletonLoss, EnhancedSkeletonLoss_WithAngleConstrains
+from model import EnhancedSkeletonTransformer
+from util import add_positional_encoding, compute_exponential_weights
+
+
 def preprocess_pressure_data(left_data, right_data):
     """圧力、回転、加速度データの前処理"""
     # 左足データから各種センサー値を抽出
@@ -152,9 +162,8 @@ def predict_skeleton():
             for i in range(min_length):
                 input_tensor = torch.FloatTensor(input_features)[i].to(device)
                 input_tensor = input_tensor.unsqueeze(0).to(device)
-                # if i%200==0:
-                #    skeleton_last=torch.zeros_like(skeleton_last)
 
+                skeleton_last_pos = add_positional_encoding(skeleton_last)
                 skeleton_predict_seq = model(input_tensor, skeleton_last)
                 skeleton_predict_seq = skeleton_predict_seq.squeeze(0)
                 skeleton_predict = torch.zeros(63).to(device)
@@ -180,8 +189,8 @@ def predict_skeleton():
             predictions=model(input_tensor,skeleton_data)
         '''
         print(f"Prediction shape: {predictions.shape}")
-        criterion = EnhancedSkeletonLoss(alpha=1.0, beta=0.1, gamma=0.1, window_size=1)
-        criterion1 = EnhancedSkeletonLoss_WithAngleConstrains(alpha=1.0, beta=0.1, gamma=0.1, window_size=1)
+        criterion = EnhancedSkeletonLoss(alpha=1.0, )
+        criterion1 = EnhancedSkeletonLoss_WithAngleConstrains(alpha=1.0, gamma=0.1, window_size=1)
         predictionsa = predictions.unsqueeze(1)
         skeleton_dataa = skeleton_data.unsqueeze(1)
         loss = criterion(predictionsa, skeleton_dataa)

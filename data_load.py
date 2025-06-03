@@ -1,3 +1,22 @@
+import pandas as pd
+import numpy as np
+from sklearn.preprocessing import MinMaxScaler,StandardScaler
+import torch
+from torch.utils.data import Dataset
+
+class PressureSkeletonDataset(Dataset):
+    def __init__(self, pressure_data, skeleton_data, decoder_input):
+        self.pressure_data = torch.FloatTensor(pressure_data)
+        self.skeleton_data = torch.FloatTensor(skeleton_data)
+        self.decoder_input = torch.FloatTensor(decoder_input)
+
+    def __len__(self):
+        return len(self.pressure_data)
+
+    def __getitem__(self, idx):
+        return self.pressure_data[idx], self.skeleton_data[idx], self.decoder_input[idx]
+
+
 def load_and_combine_data(file_pairs, seq_length, window_size):
     """複数のデータセットを読み込んで結合する"""
     all_skeleton_data = []
@@ -98,30 +117,11 @@ def preprocess_pressure_data(left_data, right_data):
     accel_processed = accel_standardizer.fit_transform(
         accel_normalizer.fit_transform(accel_combined)
     )
-
-    # 1次微分と2次微分の計算
-    pressure_grad1 = np.gradient(pressure_processed, axis=0)
-    pressure_grad2 = np.gradient(pressure_grad1, axis=0)
-
-    rotation_grad1 = np.gradient(rotation_processed, axis=0)
-    '''不存在物理意义
-    rotation_grad2 = np.gradient(rotation_grad1, axis=0)
-
-    accel_grad1 = np.gradient(accel_processed, axis=0)
-    accel_grad2 = np.gradient(accel_grad1, axis=0)
-    '''
-
     # すべての特徴量を結合
     input_features = np.concatenate([
         pressure_processed,
-        # pressure_grad1,
-        # pressure_grad2,
         rotation_processed,
-        # rotation_grad1,
-        # rotation_grad2,
         accel_processed,
-        # accel_grad1,
-        # accel_grad2
     ], axis=1)
 
     return input_features, {
