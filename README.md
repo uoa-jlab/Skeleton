@@ -1,12 +1,12 @@
-# 项目名称 / Project Title
+# Skeleton Predict
 
-一句话简介项目的功能和目的。
+Collect plantar pressure data using smart insoles and then perform prediction using a Transformer model.
 
 ---
 
-## 目录 / Table of Contents
+## Table of Contents
 
-- [简介](#简介)
+- Introduction
 - [安装](#安装)
 - [使用方法](#使用方法)
 - [项目结构](#项目结构)
@@ -20,7 +20,7 @@
 
 ---
 
-## 简介
+## Introduction
 
 简要介绍项目背景、目标和主要方法。
 
