@@ -40,7 +40,7 @@ pip install -r requirements.txt
 
 ## Project Structure
 
-···
+···bash
 project-name/
 ├── data/ # Dataset files
 ├── docs/ # Documentation files
