@@ -33,3 +33,19 @@ Since this project is highly task-specific, it cannot be directly applied to oth
 All the required libraries are listed in the requirements.txt file.
 ```bash
 pip install -r requirements.txt
+
+## Project Structure
+
+project-name/
+├── data/ # Dataset files
+├── docs/ # Documentation files
+├── notebooks/ # Jupyter notebooks for experiments and analysis
+├── src/ # Source code
+│ ├── init.py # Package initialization
+│ ├── model.py # Model definitions
+│ ├── train.py # Training scripts
+│ └── utils.py # Utility functions
+├── tests/ # Unit tests
+├── requirements.txt # Python dependencies
+├── README.md # Project overview and instructions
+└── setup.py # Installation script
