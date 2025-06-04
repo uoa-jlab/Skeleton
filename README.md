@@ -53,3 +53,6 @@ Skeleton/
 ├── visualization # Visualize and compare the predicted skeleton data with the ground truth skeleton data
 └── README.md # README
 ```
+## Model-Structure
+
+![Model Architecture](model.png)
