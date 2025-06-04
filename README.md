@@ -41,17 +41,15 @@ pip install -r requirements.txt
 ## Project Structure
 
 ```bash
-project-name/
-├── data/ # Dataset files
-├── docs/ # Documentation files
-├── notebooks/ # Jupyter notebooks for experiments and analysis
-├── src/ # Source code
-│ ├── init.py # Package initialization
-│ ├── model.py # Model definitions
-│ ├── train.py # Training scripts
-│ └── utils.py # Utility functions
-├── tests/ # Unit tests
-├── requirements.txt # Python dependencies
-├── README.md # Project overview and instructions
-└── setup.py # Installation script
+Skeleton/
+├── Code.ipynb/ # Complete code written in Jupyter
+├── data_load.py/ # Loading the collected pressure and skeleton data
+├── loss.py/ # Includes the loss function used for training and the loss function used to compute the deviation of the predicted results.
+├── main.py/ # The main function of the program, consisting of model training.
+├── model.py # Transformer model
+├── predict.py # The program that performs prediction using the model
+├── requirements.txt # The libraries required to run the program
+├── util.py/ # Includes all the utilities or functions required to run the program
+├── visualization # Visualize and compare the predicted skeleton data with the ground truth skeleton data
+└── README.md # README
 ```
