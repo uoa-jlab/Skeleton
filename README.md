@@ -53,8 +53,3 @@ Skeleton/
 ├── visualization # Visualize and compare the predicted skeleton data with the ground truth skeleton data
 └── README.md # README
 ```
-## Results Demo
-
-Click the image below to watch the demo video:
-
-[![Watch the demo](https://img.youtube.com/vi/dQw4w9WgXcQ/hqdefault.jpg)](https://www.youtube.com/watch?v=dQw4w9WgXcQ)
