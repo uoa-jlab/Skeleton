@@ -8,7 +8,7 @@ Collect plantar pressure data using smart insoles and then perform prediction us
 
 - [Introduction](#Introduction)
 - [Install](#Intall)
-- [Project Structure](#Project Structure)
+- [Project Structure](#ProjectStructure)
 - [项目结构](#项目结构)
 - [数据说明](#数据说明)
 - [训练与测试](#训练与测试)
