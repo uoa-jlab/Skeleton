@@ -8,7 +8,7 @@ Collect plantar pressure data using smart insoles and then perform prediction us
 
 - [Introduction](#Introduction)
 - [Install](#Intall)
-- [Project Structure](#ProjectStructure)
+- [Project-Structure](#Project-Structure)
 - [项目结构](#项目结构)
 - [数据说明](#数据说明)
 - [训练与测试](#训练与测试)
@@ -38,7 +38,7 @@ pip install -r requirements.txt
 
 ---
 
-## Project Structure
+## Project-Structure
 
 ```bash
 Skeleton/
